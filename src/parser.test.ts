@@ -88,4 +88,17 @@ describe('parsePipRequirementsLine', () => {
             environmentMarkerTree: { left: 'python_version', operator: '==', right: '"2.7"' },
         })
     })
+    it('should return null for a comment', () => {
+        const requirement = parsePipRequirementsLine(' # xyz ')
+        expect(requirement).toBeNull()
+    })
+    it('should return null for a blank line', () => {
+        const requirement = parsePipRequirementsLine('')
+        expect(requirement).toBeNull()
+    })
+    it('should throw an error if the syntax is wrong', () => {
+        expect(() => parsePipRequirementsLine('pip???')).toThrowError(
+            'Failed to parse requirements line. Line 1, col 4: expected end of input'
+        )
+    })
 })

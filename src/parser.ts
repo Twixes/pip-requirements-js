@@ -17,15 +17,15 @@ import {
 export function parsePipRequirementsFile(fileContent: string): Requirement[] {
     const matchResult = grammar.match(fileContent, 'File')
     if (matchResult.failed()) {
-        throw new RequirementsSyntaxError(`Failed to parse requirements file: ${matchResult.message}`)
+        throw new RequirementsSyntaxError(`Failed to parse requirements file. ${matchResult.message}`)
     }
     return semantics(matchResult).parse()
 }
 
-export function parsePipRequirementsLine(lineContent: string): Requirement {
+export function parsePipRequirementsLine(lineContent: string): Requirement | null {
     const matchResult = grammar.match(lineContent, 'Line')
     if (matchResult.failed()) {
-        throw new RequirementsSyntaxError(`Failed to parse requirements line: ${matchResult.shortMessage}`)
+        throw new RequirementsSyntaxError(`Failed to parse requirements line. ${matchResult.shortMessage}`)
     }
     return semantics(matchResult).parse()
 }
@@ -39,7 +39,7 @@ semantics.addOperation<any>('parse', {
             .asIteration()
             .children.map((line) => line.parse())
             .filter(Boolean),
-    Line: (req, _comment): Requirement | null => req.child(0)?.parse(),
+    Line: (req, _comment): Requirement | null => req.child(0)?.parse() || null,
 
     NameReq: (name, extras, versionSpec, markers): ProjectNameRequirement => ({
         type: 'ProjectName',
