@@ -1,7 +1,7 @@
 {
-    "name": "pip-requirements-parser",
+    "name": "pip-requirements-js",
     "version": "0.0.0",
-    "description": "Parse pip requirements.txt files in JS",
+    "description": "A robust parser for requirements.txt files",
     "keywords": [
         "pip",
         "python",
@@ -10,8 +10,8 @@
     "author": "Michael Matloka",
     "license": "ISC",
     "main": "dist/index.js",
-    "homepage": "https://github.com/Twixes/pip-requirements-parser#readme",
-    "repository": "Twixes/pip-requirements-parser",
+    "homepage": "https://github.com/Twixes/pip-requirements-js#readme",
+    "repository": "Twixes/pip-requirements-js",
     "scripts": {
         "prepare": "husky install",
         "lint": "eslint --fix 'src/**'",
@@ -19,13 +19,20 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "clean": "rimraf dist",
-        "compile": "tsc",
-        "compile:check": "tsc --noEmit",
-        "test": "jest",
+        "compile:ohm": "ohm generateBundles --withTypes src/*",
+        "compile:ts": "tsc",
+        "compile:ts:check": "tsc --noEmit",
+        "compile": "pnpm compile:ohm && pnpm compile:ts",
+        "compile:check": "pnpm compile:ohm && pnpm compile:ts:check",
+        "test": "pnpm jest",
         "build": "pnpm clean && pnpm compile",
         "prepublishOnly": "pnpm test && pnpm build"
     },
+    "dependencies": {
+        "ohm-js": "^17.1.0"
+    },
     "devDependencies": {
+        "@ohm-js/cli": "^2.0.0",
         "@types/jest": "^29.5.2",
         "@typescript-eslint/eslint-plugin": "^5.60.1",
         "@typescript-eslint/parser": "^5.60.1",

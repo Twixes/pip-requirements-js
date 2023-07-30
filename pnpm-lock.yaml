@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@ohm-js/cli': ^2.0.0
   '@types/jest': ^29.5.2
   '@typescript-eslint/eslint-plugin': ^5.60.1
   '@typescript-eslint/parser': ^5.60.1
@@ -12,12 +13,14 @@ specifiers:
   husky: ^8.0.3
   jest: ^29.5.0
   lint-staged: ^13.2.3
+  ohm-js: ^17.1.0
   prettier: ^2.8.8
   rimraf: ^5.0.1
   ts-jest: ^29.1.1
   typescript: ^5.1.6
 
 devDependencies:
+  '@ohm-js/cli': 2.0.0_ohm-js@17.1.0
   '@types/jest': 29.5.2
   '@typescript-eslint/eslint-plugin': 5.60.1_sys7oyzzpp7dirgslgzodwmody
   '@typescript-eslint/parser': 5.60.1_iqf7tbmerllfqanu4l3d6aqdn4
@@ -29,6 +32,7 @@ devDependencies:
   husky: 8.0.3
   jest: 29.5.0
   lint-staged: 13.2.3
+  ohm-js: 17.1.0
   prettier: 2.8.8
   rimraf: 5.0.1
   ts-jest: 29.1.1_tiloc3ejst55n76oty5rbi22ra
@@ -735,6 +739,17 @@ packages:
       fastq: 1.15.0
     dev: true
 
+  /@ohm-js/cli/2.0.0_ohm-js@17.1.0:
+    resolution: {integrity: sha512-yiO6QEqW4wQQe1l9c+jOIfmhGm2LlHEhjmaB5Qu9hhz6rEQvL/vhz44azgHegLb0m23D0S7a78orURbPClRtyA==}
+    hasBin: true
+    peerDependencies:
+      ohm-js: ^17.0.0
+    dependencies:
+      commander: 8.3.0
+      fast-glob: 3.3.0
+      ohm-js: 17.1.0
+    dev: true
+
   /@pkgjs/parseargs/0.11.0:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
@@ -1389,6 +1404,11 @@ packages:
   /commander/10.0.1:
     resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
     engines: {node: '>=14'}
+    dev: true
+
+  /commander/8.3.0:
+    resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
+    engines: {node: '>= 12'}
     dev: true
 
   /concat-map/0.0.1:
@@ -3216,6 +3236,11 @@ packages:
       call-bind: 1.0.2
       define-properties: 1.2.0
       es-abstract: 1.21.2
+    dev: true
+
+  /ohm-js/17.1.0:
+    resolution: {integrity: sha512-xc3B5dgAjTBQGHaH7B58M2Pmv6WvzrJ/3/7LeUzXNg0/sY3jQPdSd/S2SstppaleO77rifR1tyhdfFGNIwxf2Q==}
+    engines: {node: '>=0.12.1'}
     dev: true
 
   /once/1.4.0:
