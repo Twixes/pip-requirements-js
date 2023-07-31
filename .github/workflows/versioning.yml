@@ -7,7 +7,7 @@ permissions:
     contents: write
     pull-requests: write
 
-name: versioning
+name: Versioning
 
 jobs:
     release-please:
@@ -29,4 +29,6 @@ jobs:
               with:
                   cache: 'pnpm'
             - run: pnpm install
-            - run: pnpm publish
+            - run: npm publish
+              env:
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
