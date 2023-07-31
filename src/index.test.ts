@@ -1,4 +1,4 @@
-import { parsePipRequirementsLine } from './parser'
+import { parsePipRequirementsLine, parsePipRequirementsLineLoosely } from '.'
 
 describe('parsePipRequirementsLine', () => {
     it('should parse a version matching name-based project requirement', () => {
@@ -100,5 +100,37 @@ describe('parsePipRequirementsLine', () => {
         expect(() => parsePipRequirementsLine('pip???')).toThrowError(
             'Failed to parse requirements line. Line 1, col 4: expected end of input'
         )
+    })
+})
+
+describe('parsePipRequirementLineLoosely', () => {
+    it('should parse a basic in-flight requirement', () => {
+        const requirement = parsePipRequirementsLineLoosely('pip = ')
+        expect(requirement).toEqual({
+            type: 'ProjectName',
+            name: 'pip',
+        })
+    })
+    it('should parse an in-flight requirement with a random environment marker', () => {
+        const requirement = parsePipRequirementsLineLoosely('hope = 2.0 ; xds')
+        expect(requirement).toEqual({
+            type: 'ProjectName',
+            name: 'hope',
+        })
+    })
+    it('should parse a name-based project requirement with extras, environment markers, and a comment', () => {
+        const requirement = parsePipRequirementsLineLoosely('pip[foo,bar]; python_version == "2.7" # xyz ')
+        expect(requirement).toEqual({
+            type: 'ProjectName',
+            name: 'pip',
+        })
+    })
+    it('should ignore a URL-based project requirement', () => {
+        const requirement = parsePipRequirementsLineLoosely('pip @ https://x.com/y.zip')
+        expect(requirement).toBeNull()
+    })
+    it('should ignore a requirements file requirement', () => {
+        const requirement = parsePipRequirementsLineLoosely('-r requirements.txt')
+        expect(requirement).toBeNull()
     })
 })

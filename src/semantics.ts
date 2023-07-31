@@ -12,48 +12,34 @@ import {
     VersionSpec,
     PythonString,
     EnvironmentMarkerVariable,
+    LooseProjectNameRequirement,
 } from './types'
 
-export function parsePipRequirementsFile(fileContent: string): Requirement[] {
-    const matchResult = grammar.match(fileContent, 'File')
-    if (matchResult.failed()) {
-        throw new RequirementsSyntaxError(`Failed to parse requirements file. ${matchResult.message}`)
-    }
-    return semantics(matchResult).parse()
-}
+export const semantics = grammar.createSemantics()
 
-export function parsePipRequirementsLine(lineContent: string): Requirement | null {
-    const matchResult = grammar.match(lineContent, 'Line')
-    if (matchResult.failed()) {
-        throw new RequirementsSyntaxError(`Failed to parse requirements line. ${matchResult.shortMessage}`)
-    }
-    return semantics(matchResult).parse()
-}
-
-const semantics = grammar.createSemantics()
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-semantics.addOperation<any>('parse', {
+semantics.addOperation<any>('extract', {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     File: (linesList): Requirement[] =>
         linesList
             .asIteration()
-            .children.map((line) => line.parse())
+            .children.map((line) => line.extract())
             .filter(Boolean),
-    Line: (req, _comment): Requirement | null => req.child(0)?.parse() || null,
+    Line: (req, _comment): Requirement | null => req.child(0)?.extract() || null,
 
     NameReq: (name, extras, versionSpec, markers): ProjectNameRequirement => ({
         type: 'ProjectName',
         name: name.sourceString,
-        versionSpec: versionSpec.parse(),
-        extras: extras.child(0)?.parse(),
-        environmentMarkerTree: markers.child(0)?.parse(),
+        versionSpec: versionSpec.extract(),
+        extras: extras.child(0)?.extract(),
+        environmentMarkerTree: markers.child(0)?.extract(),
     }),
     UrlReq: (name, extras, url, _space, markers): ProjectURLRequirement => ({
         type: 'ProjectURL',
         name: name.sourceString,
-        url: url.parse(),
-        extras: extras.child(0)?.parse(),
-        environmentMarkerTree: markers.child(0)?.parse(),
+        url: url.extract(),
+        extras: extras.child(0)?.extract(),
+        environmentMarkerTree: markers.child(0)?.extract(),
     }),
     Extras: (_open, extrasList, _close): string[] =>
         extrasList.asIteration().children.map((extra) => extra.sourceString),
@@ -68,36 +54,54 @@ semantics.addOperation<any>('parse', {
 
     UrlSpec: (_at, uriReference): string => uriReference.sourceString,
 
-    QuotedMarker: (_semi, marker): string => marker.parse(),
+    QuotedMarker: (_semi, marker): string => marker.extract(),
     MarkerOr_node: (left, _or, right): EnvironmentMarkerNode => ({
         operator: 'or',
-        left: left.parse(),
-        right: right.parse(),
+        left: left.extract(),
+        right: right.extract(),
     }),
     MarkerAnd_node: (left, _and, right): EnvironmentMarkerNode => ({
         operator: 'and',
-        left: left.parse(),
-        right: right.parse(),
+        left: left.extract(),
+        right: right.extract(),
     }),
     MarkerExpr_leaf: (left, operator, right): EnvironmentMarkerLeaf => ({
         left: left.sourceString as EnvironmentMarkerVariable | PythonString,
         operator: operator.sourceString as EnvironmentMarkerVersionOperator,
         right: right.sourceString as PythonString | EnvironmentMarkerVariable,
     }),
-    MarkerExpr_node: (_open, marker, _close): EnvironmentMarker => marker.parse(),
+    MarkerExpr_node: (_open, marker, _close): EnvironmentMarker => marker.extract(),
 
-    VersionSpec_parenthesized: (_open, versionMany, _close): string[] => versionMany.parse() || [],
+    VersionSpec_parenthesized: (_open, versionMany, _close): string[] => versionMany.extract() || [],
     VersionMany: (versionOnesList): VersionSpec[] | undefined => {
         const versionOnes = versionOnesList.asIteration().children
         if (versionOnes.length === 0) {
             return undefined
         }
-        return versionOnes.map((versionOne) => versionOne.parse())
+        return versionOnes.map((versionOne) => versionOne.extract())
     },
     VersionOne: (operator, version): VersionSpec => ({
         operator: operator.sourceString as VersionSpec['operator'],
         version: version.sourceString,
     }),
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+})
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+semantics.addOperation<any>('extractLoosely', {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    LooseFile: (linesList): Requirement[] =>
+        linesList
+            .asIteration()
+            .children.map((line) => line.extractLoosely())
+            .filter(Boolean),
+    LooseLine: (req, _comment): Requirement | null => req.child(0)?.extractLoosely() || null,
+
+    LooseNameReq: (name, _extras, _versionSpec, _markers): LooseProjectNameRequirement => ({
+        type: 'ProjectName',
+        name: name.sourceString,
+    }),
+    LooseNonNameReq: (_) => null,
     /* eslint-enable @typescript-eslint/no-unused-vars */
 })
 

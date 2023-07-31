@@ -3,7 +3,6 @@ PEP508 {
     // (naming retained, just reordered and camelCased)
     File = ListOf<Line, "\n">
     Line = Req? comment?
-
     Req = UrlReq | NameReq | RequirementsReq | ConstraintsReq
 
     NameReq = Name Extras? VersionSpec QuotedMarker?
@@ -19,7 +18,7 @@ PEP508 {
     ConstraintsReq  = "-c" filePath
     filePath        = (~("\n" | "#") any)+
 
-    UrlSpec       = "@" uriReference
+    UrlSpec      = "@" uriReference
     uriReference = uri | relativeRef
     uri          = scheme ":" hierPart? ("?" query )? ("#" fragment)?
     hierPart     = ("//" authority pathAbempty) -- abempty
@@ -99,4 +98,20 @@ PEP508 {
     comment = "#" (~"\n" any)*
 
     space := " " | "\t" // Overriding Ohm's definition of whitespace to kick out newlines and other Unicode whitespace
+
+    // Loose grammar for parsing unfinished requirements - focused on extracting the name, extras, and version spec
+    LooseFile         = ListOf<LooseLine, "\n">
+    LooseLine         = LooseReq? comment?
+    LooseReq          = LooseNonNameReq | LooseNameReq
+    LooseNameReq      = Name LooseExtras? LooseVersionSpec LooseQuotedMarker?
+    LooseNonNameReq   = (~(~(Name "@") Name) looseAnything) // Non-name req can start with Name only if followed by "@"
+    LooseExtras       = "[" (ListOf<identifier, ","> "]"?)?
+    LooseQuotedMarker = ";" looseAnything?
+    LooseVersionSpec  = "(" (LooseVersionMany ")"?)? -- parenthesized
+                      | LooseVersionMany -- direct
+    LooseVersionMany  = ListOf<LooseVersionOne, ","> ","?
+    LooseVersionOne   = (looseVersionCmp looseVersion?)?
+    looseVersionCmp   = ("<" | "=" | "!" | ">" | "~")+
+    looseVersion      = (alnum | "-" | "_" | "." | "*" | "+" | "!" )+
+    looseAnything     = (~("\n" | "#") any)* // Any non-comment line content
 }

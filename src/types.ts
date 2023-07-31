@@ -111,3 +111,9 @@ export enum VersionOperator {
     /** {@link https://peps.python.org/pep-0440/#arbitrary-equality See reference.} */
     ArbitrarilyEqual = '===',
 }
+
+/** Barebones name requirement parsed in loose mode. */
+export interface LooseProjectNameRequirement {
+    type: 'ProjectName'
+    name: string
+}
