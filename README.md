@@ -14,8 +14,6 @@ In both cases a `RequirementsSyntaxError` will be thrown if the provided content
 
 To make use of the resulting data, look up what `Requirement` is made up of in [`types.ts`](https://github.com/Twixes/pip-requirements-js/blob/main/src/).
 
-The above is pretty much all you need to know!
-
 ## Internals
 
-The core of this library is [pep-508.ohm](https://github.com/Twixes/pip-requirements-js/blob/main/src/pep-508.ohm), which is a port of the [complete dependency specification grammar of PEP 508](https://peps.python.org/pep-0508/#complete-grammar). The original syntax is defined for Parsley, while pip-requirements-js uses [Ohm](https://github.com/ohmjs/ohm) – a robust _pure-JS_ parser generator. It's this combination of solutions that provides peace of mind in terms of parsing correctness.
+pip-requirements-js uses the robust parser generator [Ohm.js](https://github.com/ohmjs/ohm), and the core of this library is the [pep-508.ohm](https://github.com/Twixes/pip-requirements-js/blob/main/src/pep-508.ohm) grammar – a straightforward Ohm port of [PEP 508's complete dependency specification grammar](https://peps.python.org/pep-0508/#complete-grammar) (originally defined for Parsley). This ensures the greatest possible compatabibility with what pip itself does.
