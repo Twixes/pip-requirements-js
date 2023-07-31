@@ -7,7 +7,7 @@ permissions:
     contents: write
     pull-requests: write
 
-name: Release Please
+name: versioning
 
 jobs:
     release-please:
@@ -20,7 +20,7 @@ jobs:
                   package-name: pip-requirements-js
     publish:
         if: "startsWith(github.event.head_commit.message, 'chore(main): release')"
-        name: Publish new version
+        name: Publish
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3

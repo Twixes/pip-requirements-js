@@ -20,5 +20,6 @@
         "noImplicitReturns": true,
         "noUncheckedIndexedAccess": true,
         "noImplicitOverride": true
-    }
+    },
+    "exclude": ["src/**/*.test.ts"]
 }

@@ -27,7 +27,7 @@
         "compile:check": "pnpm compile:ohm && pnpm compile:ts:check",
         "test": "pnpm jest",
         "build": "pnpm clean && pnpm compile",
-        "prepublishOnly": "pnpm test && pnpm build"
+        "prepublishOnly": "pnpm build && pnpm test"
     },
     "dependencies": {
         "ohm-js": "^17.1.0"
