@@ -12,10 +12,11 @@
     "main": "dist/index.js",
     "homepage": "https://github.com/Twixes/pip-requirements-js#readme",
     "repository": "Twixes/pip-requirements-js",
+    "packageManager": "pnpm@8.6.11",
     "scripts": {
         "prepare": "husky install",
-        "lint": "eslint --fix 'src/**'",
-        "lint:check": "eslint 'src/**'",
+        "lint": "eslint --fix src/",
+        "lint:check": "eslint src/",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "clean": "rimraf dist",
@@ -50,7 +51,7 @@
         "typescript": "^5.1.6"
     },
     "lint-staged": {
-        "*.{js,json,md}": "prettier --write",
+        "*.{js,json,md,yml,yaml}": "prettier --write",
         "src/*.ts": [
             "prettier --write",
             "eslint --fix"

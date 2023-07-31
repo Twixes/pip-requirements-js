@@ -31,8 +31,8 @@ export function parsePipRequirementsLine(lineContent: string): Requirement | nul
 }
 
 const semantics = grammar.createSemantics()
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 semantics.addOperation<any>('parse', {
-    // eslint-disable-line @typescript-eslint/no-explicit-any
     /* eslint-disable @typescript-eslint/no-unused-vars */
     File: (linesList): Requirement[] =>
         linesList
