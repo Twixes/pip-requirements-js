@@ -25,8 +25,9 @@
         "compile:ts:check": "tsc --noEmit",
         "compile": "pnpm compile:ohm && pnpm compile:ts",
         "compile:check": "pnpm compile:ohm && pnpm compile:ts:check",
+        "copy:ohm": "cp src/**.ohm-bundle.* dist/",
         "test": "pnpm jest",
-        "build": "pnpm clean && pnpm compile",
+        "build": "pnpm clean && pnpm compile && pnpm copy:ohm",
         "prepublishOnly": "pnpm build && pnpm test"
     },
     "dependencies": {
