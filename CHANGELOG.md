@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/Twixes/pip-requirements-js/compare/v0.1.2...v0.2.0) (2023-07-31)
+
+
+### Features
+
+* Add loose extraction ([5a81df1](https://github.com/Twixes/pip-requirements-js/commit/5a81df11b6ac331d3dabe842b934d3faf3bd48ba))
+
 ## [0.1.2](https://github.com/Twixes/pip-requirements-js/compare/v0.1.1...v0.1.2) (2023-07-31)
 
 
