@@ -1,1 +1,2 @@
-export { parsePipRequirementsLine } from './parser'
+export { parsePipRequirementsFile, parsePipRequirementsLine, RequirementsSyntaxError } from './parser'
+export * from './types'
