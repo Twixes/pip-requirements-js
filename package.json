@@ -15,8 +15,8 @@
     "packageManager": "pnpm@7.14.2",
     "scripts": {
         "prepare": "husky install",
-        "lint": "eslint --fix 'src/**'",
-        "lint:check": "eslint 'src/**'",
+        "lint": "eslint --fix src/",
+        "lint:check": "eslint src/",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "clean": "rimraf dist",
