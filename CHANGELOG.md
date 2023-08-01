@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/Twixes/pip-requirements-js/compare/v0.2.0...v0.2.1) (2023-08-01)
+
+
+### Bug Fixes
+
+* Handle comment-only lines properly ([424bf01](https://github.com/Twixes/pip-requirements-js/commit/424bf01c0a1f6d7a41c1f24b010803e77e29863c))
+
 ## [0.2.0](https://github.com/Twixes/pip-requirements-js/compare/v0.1.2...v0.2.0) (2023-07-31)
 
 
