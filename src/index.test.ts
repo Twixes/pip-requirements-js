@@ -88,11 +88,11 @@ describe('parsePipRequirementsLine', () => {
             environmentMarkerTree: { left: 'python_version', operator: '==', right: '"2.7"' },
         })
     })
-    it('should return null for a comment', () => {
+    it('should ignore a comment', () => {
         const requirement = parsePipRequirementsLine(' # xyz ')
         expect(requirement).toBeNull()
     })
-    it('should return null for a blank line', () => {
+    it('should ignore a blank line', () => {
         const requirement = parsePipRequirementsLine('')
         expect(requirement).toBeNull()
     })
@@ -131,6 +131,10 @@ describe('parsePipRequirementLineLoosely', () => {
     })
     it('should ignore a requirements file requirement', () => {
         const requirement = parsePipRequirementsLineLoosely('-r requirements.txt')
+        expect(requirement).toBeNull()
+    })
+    it('should ignore a comment-only requirement', () => {
+        const requirement = parsePipRequirementsLineLoosely('# text')
         expect(requirement).toBeNull()
     })
 })

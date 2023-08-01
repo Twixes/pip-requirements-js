@@ -101,12 +101,12 @@ PEP508 {
 
     // Loose grammar for parsing unfinished requirements - focused on extracting the name, extras, and version spec
     LooseFile         = ListOf<LooseLine, "\n">
-    LooseLine         = LooseReq? comment?
+    LooseLine         = LooseReq comment?
     LooseReq          = LooseNonNameReq | LooseNameReq
     LooseNameReq      = Name LooseExtras? LooseVersionSpec LooseQuotedMarker?
     LooseNonNameReq   = (~(~(Name "@") Name) looseAnything) // Non-name req can start with Name only if followed by "@"
     LooseExtras       = "[" (ListOf<identifier, ","> "]"?)?
-    LooseQuotedMarker = ";" looseAnything?
+    LooseQuotedMarker = ";" looseAnything
     LooseVersionSpec  = "(" (LooseVersionMany ")"?)? -- parenthesized
                       | LooseVersionMany -- direct
     LooseVersionMany  = ListOf<LooseVersionOne, ","> ","?
