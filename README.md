@@ -37,4 +37,4 @@ pip-requirements-js is built with the robust parser generator [Ohm.js](https://g
 
 ## But why?
 
-Well, this library was built as a backend for the [PyPI Assistant](https://marketplace.visualstudio.com/items?itemName=twixes.pypi-assistant) VS Code extension. Check it out!
+Well, I built this to power my other side project, the VS Code extension [PyPI Assistant](https://marketplace.visualstudio.com/items?itemName=twixes.pypi-assistant). Give that a try too!
