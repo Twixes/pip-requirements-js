@@ -35,4 +35,6 @@ There is also a loose mode, which is oriented for processing partially-written r
 
 pip-requirements-js is built with the robust parser generator [Ohm.js](https://github.com/ohmjs/ohm) – the core of this library is the [pep-508.ohm](https://github.com/Twixes/pip-requirements-js/blob/main/src/pep-508.ohm) grammar, which is an Ohm port of [PEP 508's complete dependency specification grammar](https://peps.python.org/pep-0508/#complete-grammar) (originally defined for Parsley), with some pip-specific additions (such as the `-r extra-requirements.txt` syntax). This ensures the greatest possible compatibility with what pip itself does.
 
-This library was built as a backend for the [PyPI Assistant](https://marketplace.visualstudio.com/items?itemName=twixes.pypi-assistant) VS Code extension.
+## But why?
+
+Well, this library was built as a backend for the [PyPI Assistant](https://marketplace.visualstudio.com/items?itemName=twixes.pypi-assistant) VS Code extension. Check it out!
