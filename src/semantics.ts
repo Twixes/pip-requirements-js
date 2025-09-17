@@ -1,4 +1,4 @@
-import grammar, { PEP508ActionDict } from './pep-508.ohm-bundle'
+import grammar from './pep-508.ohm-bundle'
 import {
     Requirement,
     ProjectNameRequirement,
@@ -34,7 +34,7 @@ function withLocation<T>(node: any, data: T): WithLocation<T> {
     }
 }
 
-const STRICT_EXTRACTION_ACTION_DICT: PEP508ActionDict<any> = {
+semantics.addOperation<any>('extract', {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     File: (linesList): Requirement[] =>
         linesList
@@ -101,9 +101,9 @@ const STRICT_EXTRACTION_ACTION_DICT: PEP508ActionDict<any> = {
         version: version.sourceString,
     }),
     /* eslint-enable @typescript-eslint/no-unused-vars */
-}
+})
 
-const LOOSE_EXTRACTION_ACTION_DICT: PEP508ActionDict<any> = {
+semantics.addOperation<any>('extractLoosely', {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     LooseFile: (linesList): LooseProjectNameRequirement[] =>
         linesList
@@ -142,9 +142,9 @@ const LOOSE_EXTRACTION_ACTION_DICT: PEP508ActionDict<any> = {
         return result
     },
     /* eslint-enable @typescript-eslint/no-unused-vars */
-}
+})
 
-const STRICT_EXTRACTION_WITH_LOCATION_ACTION_DICT: PEP508ActionDict<any> = {
+semantics.addOperation<any>('extractWithLocation', {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     File: (linesList): Requirement[] =>
         linesList
@@ -224,9 +224,9 @@ const STRICT_EXTRACTION_WITH_LOCATION_ACTION_DICT: PEP508ActionDict<any> = {
         })
     },
     /* eslint-enable @typescript-eslint/no-unused-vars */
-}
+})
 
-const LOOSE_EXTRACTION_WITH_LOCATION_ACTION_DICT: PEP508ActionDict<any> = {
+semantics.addOperation<any>('extractLooselyWithLocation', {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     LooseFile: (linesList): LooseProjectNameRequirement[] =>
         linesList
@@ -266,13 +266,6 @@ const LOOSE_EXTRACTION_WITH_LOCATION_ACTION_DICT: PEP508ActionDict<any> = {
         })
     },
     /* eslint-enable @typescript-eslint/no-unused-vars */
-}
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-semantics.addOperation<any>('extract', STRICT_EXTRACTION_ACTION_DICT)
-semantics.addOperation<any>('extractLoosely', LOOSE_EXTRACTION_ACTION_DICT)
-semantics.addOperation<any>('extractWithLocation', STRICT_EXTRACTION_WITH_LOCATION_ACTION_DICT)
-semantics.addOperation<any>('extractLooselyWithLocation', LOOSE_EXTRACTION_WITH_LOCATION_ACTION_DICT)
-/* eslint-enable @typescript-eslint/no-explicit-any */
+})
 
 export class RequirementsSyntaxError extends Error {}
