@@ -21,6 +21,14 @@ parsePipRequirementsLine(lineContent: string): Requirement | null
 ```
 (null is returned for lines validly lacking a requirement, e.g. empty or comment-only)
 
+Both functions also accept an optional `options` parameter with `includeLocations: true` to get source location information:
+```typescript
+parsePipRequirementsFile(fileContent: string, options: { includeLocations: true }): WithLocation<Requirement>[]
+parsePipRequirementsLine(lineContent: string, options: { includeLocations: true }): WithLocation<Requirement> | null
+```
+
+The `WithLocation<T>` wrapper includes `data` (the parsed requirement) and `location` (with `startIdx` and `endIdx` indicating the character positions in the source).
+
 In both cases a `RequirementsSyntaxError` will be thrown if the provided content contains invalid syntax.
 
 To make use of the resulting data, look up what `Requirement` is made up of in [`types.ts`](https://github.com/Twixes/pip-requirements-js/blob/main/src/).
@@ -30,6 +38,12 @@ To make use of the resulting data, look up what `Requirement` is made up of in [
 There is also a loose mode, which is oriented for processing partially-written requirements. This is useful when handling live code editor input.
 
 `parsePipRequirementsFileLoosely` and `parsePipRequirementsLineLoosely` work the same as their full versions, except they return `LooseProjectNameRequirement` in place of `Requirement`. This means that URL-based requirements are skipped, as are requirements/constraints files.
+
+The loose parsing functions also support the `includeLocations` option:
+```typescript
+parsePipRequirementsFileLoosely(fileContent: string, options: { includeLocations: true }): WithLocation<LooseProjectNameRequirement>[]
+parsePipRequirementsLineLoosely(lineContent: string, options: { includeLocations: true }): WithLocation<LooseProjectNameRequirement> | null
+```
 
 ## Internals
 
