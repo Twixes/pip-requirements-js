@@ -6,6 +6,7 @@ on:
 permissions:
     contents: write
     pull-requests: write
+    id-token: write # Required for OIDC
 
 name: Versioning
 
@@ -30,5 +31,3 @@ jobs:
                   cache: 'pnpm'
             - run: pnpm install
             - run: npm publish
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
