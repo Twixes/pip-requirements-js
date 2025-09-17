@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/Twixes/pip-requirements-js/compare/v1.0.1...v1.0.2) (2025-09-17)
+
+
+### Bug Fixes
+
+* Standardize WithLocation typing ([79a8266](https://github.com/Twixes/pip-requirements-js/commit/79a82664255eab5f5050afe07e8f36766ee9b770))
+
 ## [1.0.1](https://github.com/Twixes/pip-requirements-js/compare/v0.2.1...v1.0.1) (2025-09-17)
 
 
