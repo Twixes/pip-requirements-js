@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.1](https://github.com/Twixes/pip-requirements-js/compare/v0.2.1...v1.0.1) (2025-09-17)
+
+
+### Features
+
+* Add `includeLocations` parsing option ([3476fe7](https://github.com/Twixes/pip-requirements-js/commit/3476fe7e34fd606a4fedd0268c088eaf0c646b5b))
+* Include version specs & extras in loose mode ([3476fe7](https://github.com/Twixes/pip-requirements-js/commit/3476fe7e34fd606a4fedd0268c088eaf0c646b5b))
+
+
+### Bug Fixes
+
+* Fully type location-enabled output ([#14](https://github.com/Twixes/pip-requirements-js/issues/14)) ([27684e2](https://github.com/Twixes/pip-requirements-js/commit/27684e26046bd47b285796bd5a06a1627ae03176))
+
+
+### Miscellaneous Chores
+
+* **main:** release 1.0.0 ([3891674](https://github.com/Twixes/pip-requirements-js/commit/389167428a8c8289f47eb93a82f56a440b83f760))
+
 ## [1.0.0](https://github.com/Twixes/pip-requirements-js/compare/v0.2.1...v1.0.0) (2025-09-17)
 
 
