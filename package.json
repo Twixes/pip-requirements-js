@@ -11,7 +11,10 @@
     "license": "ISC",
     "main": "dist/index.js",
     "homepage": "https://github.com/Twixes/pip-requirements-js#readme",
-    "repository": "Twixes/pip-requirements-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Twixes/pip-requirements-js.git"
+    },
     "packageManager": "pnpm@8.6.11",
     "scripts": {
         "prepare": "husky install",
