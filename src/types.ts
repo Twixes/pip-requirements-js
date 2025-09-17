@@ -125,6 +125,8 @@ export interface LooseVersionSpec {
     version?: string
 }
 
+// Location-enabled types
+
 export interface SourceLocation {
     startIdx: number
     endIdx: number
@@ -134,3 +136,58 @@ export interface WithLocation<T> {
     data: T
     location: SourceLocation
 }
+
+// WithLocation variants for project requirements
+export interface ProjectNameRequirementWithLocation extends ProjectRequirementBaseWithLocation {
+    type: 'ProjectName'
+    versionSpec?: WithLocation<VersionSpecWithLocation>[]
+}
+
+export interface ProjectURLRequirementWithLocation extends ProjectRequirementBaseWithLocation {
+    type: 'ProjectURL'
+    url: WithLocation<string>
+}
+
+interface ProjectRequirementBaseWithLocation {
+    name: WithLocation<string>
+    extras?: WithLocation<string>[]
+    environmentMarkerTree?: EnvironmentMarker
+}
+
+// WithLocation variants for file requirements
+export interface RequirementsFileRequirementWithLocation extends FileRequirementBaseWithLocation {
+    type: 'RequirementsFile'
+}
+
+export interface ConstraintsFileRequirementWithLocation extends FileRequirementBaseWithLocation {
+    type: 'ConstraintsFile'
+}
+
+interface FileRequirementBaseWithLocation {
+    path: string
+}
+
+export interface VersionSpecWithLocation {
+    operator: WithLocation<VersionOperator>
+    version: WithLocation<string>
+}
+
+export interface LooseProjectNameRequirementData {
+    type: 'ProjectName'
+    name: WithLocation<string>
+    versionSpec?: WithLocation<LooseVersionSpecWithLocation>[]
+    extras?: WithLocation<string>[]
+}
+
+export interface LooseVersionSpecWithLocation {
+    operator: WithLocation<string>
+    version?: WithLocation<string>
+}
+
+export type RequirementWithLocation =
+    | WithLocation<ProjectNameRequirementWithLocation>
+    | WithLocation<ProjectURLRequirementWithLocation>
+    | WithLocation<RequirementsFileRequirementWithLocation>
+    | WithLocation<ConstraintsFileRequirementWithLocation>
+
+export type LooseProjectNameRequirementWithLocation = WithLocation<LooseProjectNameRequirementData>

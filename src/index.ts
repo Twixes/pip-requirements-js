@@ -1,6 +1,11 @@
 import grammar from './pep-508.ohm-bundle'
 import { RequirementsSyntaxError, semantics } from './semantics'
-import { LooseProjectNameRequirement, Requirement, WithLocation } from './types'
+import {
+    LooseProjectNameRequirement,
+    Requirement,
+    LooseProjectNameRequirementWithLocation,
+    RequirementWithLocation,
+} from './types'
 
 export { RequirementsSyntaxError } from './semantics'
 export * from './types'
@@ -10,11 +15,11 @@ export function parsePipRequirementsFile(fileContent: string): Requirement[]
 export function parsePipRequirementsFile(
     fileContent: string,
     options: { includeLocations: true }
-): WithLocation<Requirement>[]
+): RequirementWithLocation[]
 export function parsePipRequirementsFile(
     fileContent: string,
     options?: { includeLocations?: boolean }
-): Requirement[] | WithLocation<Requirement>[] {
+): Requirement[] | RequirementWithLocation[] {
     const matchResult = grammar.match(fileContent, 'File')
     if (matchResult.failed()) {
         throw new RequirementsSyntaxError(`Failed to parse requirements file. ${matchResult.shortMessage}`)
@@ -31,11 +36,11 @@ export function parsePipRequirementsLine(lineContent: string): Requirement | nul
 export function parsePipRequirementsLine(
     lineContent: string,
     options: { includeLocations: true }
-): WithLocation<Requirement> | null
+): RequirementWithLocation | null
 export function parsePipRequirementsLine(
     lineContent: string,
     options?: { includeLocations?: boolean }
-): Requirement | WithLocation<Requirement> | null {
+): Requirement | RequirementWithLocation | null {
     const matchResult = grammar.match(lineContent, 'Line')
     if (matchResult.failed()) {
         throw new RequirementsSyntaxError(`Failed to parse requirements line. ${matchResult.shortMessage}`)
@@ -52,11 +57,11 @@ export function parsePipRequirementsFileLoosely(fileContent: string): LooseProje
 export function parsePipRequirementsFileLoosely(
     fileContent: string,
     options: { includeLocations: true }
-): WithLocation<LooseProjectNameRequirement>[]
+): LooseProjectNameRequirementWithLocation[]
 export function parsePipRequirementsFileLoosely(
     fileContent: string,
     options?: { includeLocations?: boolean }
-): LooseProjectNameRequirement[] | WithLocation<LooseProjectNameRequirement>[] {
+): LooseProjectNameRequirement[] | LooseProjectNameRequirementWithLocation[] {
     const matchResult = grammar.match(fileContent, 'LooseFile')
     if (matchResult.failed()) {
         throw new RequirementsSyntaxError(`Failed to loosely parse requirements file. ${matchResult.shortMessage}`)
@@ -73,11 +78,11 @@ export function parsePipRequirementsLineLoosely(lineContent: string): LooseProje
 export function parsePipRequirementsLineLoosely(
     lineContent: string,
     options: { includeLocations: true }
-): WithLocation<LooseProjectNameRequirement> | null
+): LooseProjectNameRequirementWithLocation | null
 export function parsePipRequirementsLineLoosely(
     lineContent: string,
     options?: { includeLocations?: boolean }
-): LooseProjectNameRequirement | WithLocation<LooseProjectNameRequirement> | null {
+): LooseProjectNameRequirement | LooseProjectNameRequirementWithLocation | null {
     const matchResult = grammar.match(lineContent, 'LooseLine')
     if (matchResult.failed()) {
         throw new RequirementsSyntaxError(`Failed to loosely parse requirements line. ${matchResult.shortMessage}`)
