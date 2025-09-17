@@ -6,6 +6,7 @@ on:
 permissions:
     contents: write
     pull-requests: write
+    id-token: write # Required for OIDC
 
 name: Versioning
 
@@ -23,12 +24,11 @@ jobs:
         name: Publish
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
-            - uses: pnpm/action-setup@v2
-            - uses: actions/setup-node@v3
+            - uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+            - uses: actions/setup-node@v4
               with:
                   cache: 'pnpm'
+                  registry-url: 'https://registry.npmjs.org'
             - run: pnpm install
-            - run: npm publish
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+            - run: pnpx npm publish
