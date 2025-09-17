@@ -1,4 +1,4 @@
-import grammar from './pep-508.ohm-bundle'
+import grammar, { PEP508ActionDict } from './pep-508.ohm-bundle'
 import {
     Requirement,
     ProjectNameRequirement,
@@ -14,12 +14,27 @@ import {
     EnvironmentMarkerVariable,
     LooseProjectNameRequirement,
     LooseVersionSpec,
+    WithLocation,
+    SourceLocation,
 } from './types'
 
 export const semantics = grammar.createSemantics()
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-semantics.addOperation<any>('extract', {
+function getLocation(node: any): SourceLocation {
+    return {
+        startIdx: node.source.startIdx,
+        endIdx: node.source.endIdx,
+    }
+}
+
+function withLocation<T>(node: any, data: T): WithLocation<T> {
+    return {
+        data,
+        location: getLocation(node),
+    }
+}
+
+const STRICT_EXTRACTION_ACTION_DICT: PEP508ActionDict<any> = {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     File: (linesList): Requirement[] =>
         linesList
@@ -86,17 +101,16 @@ semantics.addOperation<any>('extract', {
         version: version.sourceString,
     }),
     /* eslint-enable @typescript-eslint/no-unused-vars */
-})
+}
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-semantics.addOperation<any>('extractLoosely', {
+const LOOSE_EXTRACTION_ACTION_DICT: PEP508ActionDict<any> = {
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    LooseFile: (linesList): Requirement[] =>
+    LooseFile: (linesList): LooseProjectNameRequirement[] =>
         linesList
             .asIteration()
             .children.map((line) => line.extractLoosely())
             .filter(Boolean),
-    LooseLine: (req, _comment): Requirement | null => req.child(0)?.extractLoosely() || null,
+    LooseLine: (req, _comment): LooseProjectNameRequirement | null => req.child(0)?.extractLoosely() || null,
 
     LooseNameReq: (name, extras, versionSpec, _markers): LooseProjectNameRequirement => ({
         type: 'ProjectName',
@@ -128,6 +142,137 @@ semantics.addOperation<any>('extractLoosely', {
         return result
     },
     /* eslint-enable @typescript-eslint/no-unused-vars */
-})
+}
+
+const STRICT_EXTRACTION_WITH_LOCATION_ACTION_DICT: PEP508ActionDict<any> = {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    File: (linesList): Requirement[] =>
+        linesList
+            .asIteration()
+            .children.map((line) => line.extractWithLocation())
+            .filter(Boolean),
+    Line: (req, _comment): Requirement | null => req.child(0)?.extractWithLocation() || null,
+
+    NameReq: function (name, extras, versionSpec, markers) {
+        return withLocation(this, {
+            type: 'ProjectName',
+            name: withLocation<string>(name, name.sourceString),
+            versionSpec: versionSpec.extractWithLocation(),
+            extras: extras.child(0)?.extractWithLocation(),
+            environmentMarkerTree: markers.child(0)?.extractWithLocation(),
+        })
+    },
+    UrlReq: function (name, extras, url, _space, markers) {
+        return withLocation(this, {
+            type: 'ProjectURL',
+            name: withLocation<string>(name, name.sourceString),
+            url: url.extractWithLocation(),
+            extras: extras.child(0)?.extractWithLocation(),
+            environmentMarkerTree: markers.child(0)?.extractWithLocation(),
+        })
+    },
+    Extras: function (_open, extrasList, _close): string[] {
+        return extrasList.asIteration().children.map((extra) => extra.sourceString)
+    },
+    RequirementsReq: function (_dashR, filePath) {
+        return withLocation(this, {
+            type: 'RequirementsFile',
+            path: filePath.sourceString,
+        })
+    },
+    ConstraintsReq: function (_dashC, filePath) {
+        return withLocation(this, {
+            type: 'ConstraintsFile',
+            path: filePath.sourceString,
+        })
+    },
+
+    UrlSpec: function (_at, uriReference) {
+        return withLocation<string>(uriReference, uriReference.sourceString)
+    },
+
+    QuotedMarker: (_semi, marker): string => marker.extract(),
+    MarkerOr_node: (left, _or, right): EnvironmentMarkerNode => ({
+        operator: 'or',
+        left: left.extractWithLocation(),
+        right: right.extractWithLocation(),
+    }),
+    MarkerAnd_node: (left, _and, right): EnvironmentMarkerNode => ({
+        operator: 'and',
+        left: left.extractWithLocation(),
+        right: right.extractWithLocation(),
+    }),
+    MarkerExpr_leaf: (left, operator, right): EnvironmentMarkerLeaf => ({
+        left: left.sourceString as EnvironmentMarkerVariable | PythonString,
+        operator: operator.sourceString as EnvironmentMarkerVersionOperator,
+        right: right.sourceString as PythonString | EnvironmentMarkerVariable,
+    }),
+    MarkerExpr_node: (_open, marker, _close): EnvironmentMarker => marker.extractWithLocation(),
+
+    VersionSpec_parenthesized: (_open, versionMany, _close): string[] => versionMany.extractWithLocation() || [],
+    VersionMany: (versionOnesList): VersionSpec[] | undefined => {
+        const versionOnes = versionOnesList.asIteration().children
+        if (versionOnes.length === 0) {
+            return undefined
+        }
+        return versionOnes.map((versionOne) => versionOne.extractWithLocation())
+    },
+    VersionOne: function (operator, version) {
+        return withLocation(this, {
+            operator: withLocation<string>(operator, operator.sourceString as VersionSpec['operator']),
+            version: withLocation<string>(version, version.sourceString),
+        })
+    },
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+}
+
+const LOOSE_EXTRACTION_WITH_LOCATION_ACTION_DICT: PEP508ActionDict<any> = {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    LooseFile: (linesList): LooseProjectNameRequirement[] =>
+        linesList
+            .asIteration()
+            .children.map((line) => line.extractLooselyWithLocation())
+            .filter(Boolean),
+    LooseLine: (req, _comment): LooseProjectNameRequirement | null =>
+        req.child(0)?.extractLooselyWithLocation() || null,
+
+    LooseNameReq: function (name, extras, versionSpec, _markers) {
+        return withLocation(this, {
+            type: 'ProjectName',
+            name: withLocation<string>(name, name.sourceString),
+            extras: extras.child(0)?.extractLooselyWithLocation(),
+            versionSpec: versionSpec.extractLooselyWithLocation(),
+        })
+    },
+    LooseNonNameReq: (_) => null,
+
+    LooseExtras: function (_open, extrasList, _trailingComma, _close): string[] {
+        return extrasList.asIteration().children.map((extra) => extra.sourceString)
+    },
+
+    LooseVersionSpec_parenthesized: (_open, versionMany, _close): string[] =>
+        versionMany.extractLooselyWithLocation() || [],
+    LooseVersionMany: (versionOnesList, _trailingComma): LooseVersionSpec[] | undefined => {
+        const versionOnes = versionOnesList.asIteration().children
+        if (versionOnes.length === 0) {
+            return undefined
+        }
+        return versionOnes.map((versionOne) => versionOne.extractLooselyWithLocation())
+    },
+    LooseVersionOne: function (operator, version) {
+        return withLocation(this, {
+            operator: withLocation<string>(operator, operator.sourceString),
+            ...(version.sourceString ? { version: withLocation<string>(version, version.sourceString) } : {}),
+        })
+    },
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+}
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+semantics.addOperation<any>('extract', STRICT_EXTRACTION_ACTION_DICT)
+semantics.addOperation<any>('extractLoosely', LOOSE_EXTRACTION_ACTION_DICT)
+semantics.addOperation<any>('extractWithLocation', STRICT_EXTRACTION_WITH_LOCATION_ACTION_DICT)
+semantics.addOperation<any>('extractLooselyWithLocation', LOOSE_EXTRACTION_WITH_LOCATION_ACTION_DICT)
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export class RequirementsSyntaxError extends Error {}

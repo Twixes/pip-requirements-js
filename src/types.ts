@@ -124,3 +124,13 @@ export interface LooseVersionSpec {
     operator: string
     version?: string
 }
+
+export interface SourceLocation {
+    startIdx: number
+    endIdx: number
+}
+
+export interface WithLocation<T> {
+    data: T
+    location: SourceLocation
+}
