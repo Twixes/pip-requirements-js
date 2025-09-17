@@ -16,6 +16,8 @@ import {
     LooseVersionSpec,
     WithLocation,
     SourceLocation,
+    VersionSpecWithLocation,
+    LooseVersionSpecWithLocation,
 } from './types'
 
 export const semantics = grammar.createSemantics()
@@ -191,26 +193,12 @@ semantics.addOperation<any>('extractWithLocation', {
         return withLocation<string>(uriReference, uriReference.sourceString)
     },
 
-    QuotedMarker: (_semi, marker): string => marker.extract(),
-    MarkerOr_node: (left, _or, right): EnvironmentMarkerNode => ({
-        operator: 'or',
-        left: left.extractWithLocation(),
-        right: right.extractWithLocation(),
-    }),
-    MarkerAnd_node: (left, _and, right): EnvironmentMarkerNode => ({
-        operator: 'and',
-        left: left.extractWithLocation(),
-        right: right.extractWithLocation(),
-    }),
-    MarkerExpr_leaf: (left, operator, right): EnvironmentMarkerLeaf => ({
-        left: left.sourceString as EnvironmentMarkerVariable | PythonString,
-        operator: operator.sourceString as EnvironmentMarkerVersionOperator,
-        right: right.sourceString as PythonString | EnvironmentMarkerVariable,
-    }),
-    MarkerExpr_node: (_open, marker, _close): EnvironmentMarker => marker.extractWithLocation(),
+    QuotedMarker: (_semi, marker): WithLocation<EnvironmentMarker> =>
+        withLocation<EnvironmentMarker>(marker, marker.extract()),
 
-    VersionSpec_parenthesized: (_open, versionMany, _close): string[] => versionMany.extractWithLocation() || [],
-    VersionMany: (versionOnesList): VersionSpec[] | undefined => {
+    VersionSpec_parenthesized: (_open, versionMany, _close): WithLocation<VersionSpecWithLocation>[] =>
+        versionMany.extractWithLocation() || [],
+    VersionMany: (versionOnesList): WithLocation<VersionSpecWithLocation>[] | undefined => {
         const versionOnes = versionOnesList.asIteration().children
         if (versionOnes.length === 0) {
             return undefined
@@ -250,9 +238,9 @@ semantics.addOperation<any>('extractLooselyWithLocation', {
         return extrasList.asIteration().children.map((extra) => withLocation<string>(extra, extra.sourceString))
     },
 
-    LooseVersionSpec_parenthesized: (_open, versionMany, _close): string[] =>
+    LooseVersionSpec_parenthesized: (_open, versionMany, _close): WithLocation<LooseVersionSpecWithLocation>[] =>
         versionMany.extractLooselyWithLocation() || [],
-    LooseVersionMany: (versionOnesList, _trailingComma): LooseVersionSpec[] | undefined => {
+    LooseVersionMany: (versionOnesList, _trailingComma): WithLocation<LooseVersionSpecWithLocation>[] | undefined => {
         const versionOnes = versionOnesList.asIteration().children
         if (versionOnes.length === 0) {
             return undefined

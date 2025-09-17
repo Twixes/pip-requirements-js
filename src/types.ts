@@ -138,33 +138,24 @@ export interface WithLocation<T> {
 }
 
 // WithLocation variants for project requirements
-export interface ProjectNameRequirementWithLocation extends ProjectRequirementBaseWithLocation {
-    type: 'ProjectName'
-    versionSpec?: WithLocation<VersionSpecWithLocation>[]
-}
+export type ProjectNameRequirementWithLocation = WithLocation<
+    ProjectRequirementBaseWithLocation & {
+        type: 'ProjectName'
+        versionSpec?: WithLocation<VersionSpecWithLocation>[]
+    }
+>
 
-export interface ProjectURLRequirementWithLocation extends ProjectRequirementBaseWithLocation {
-    type: 'ProjectURL'
-    url: WithLocation<string>
-}
+export type ProjectURLRequirementWithLocation = WithLocation<
+    ProjectRequirementBaseWithLocation & {
+        type: 'ProjectURL'
+        url: WithLocation<string>
+    }
+>
 
 interface ProjectRequirementBaseWithLocation {
     name: WithLocation<string>
     extras?: WithLocation<string>[]
-    environmentMarkerTree?: EnvironmentMarker
-}
-
-// WithLocation variants for file requirements
-export interface RequirementsFileRequirementWithLocation extends FileRequirementBaseWithLocation {
-    type: 'RequirementsFile'
-}
-
-export interface ConstraintsFileRequirementWithLocation extends FileRequirementBaseWithLocation {
-    type: 'ConstraintsFile'
-}
-
-interface FileRequirementBaseWithLocation {
-    path: string
+    environmentMarkerTree?: WithLocation<EnvironmentMarker>
 }
 
 export interface VersionSpecWithLocation {
@@ -172,22 +163,23 @@ export interface VersionSpecWithLocation {
     version: WithLocation<string>
 }
 
-export interface LooseProjectNameRequirementData {
+export type RequirementsFileRequirementWithLocation = WithLocation<RequirementsFileRequirement>
+export type ConstraintsFileRequirementWithLocation = WithLocation<ConstraintsFileRequirement>
+
+export type RequirementWithLocation =
+    | ProjectNameRequirementWithLocation
+    | ProjectURLRequirementWithLocation
+    | RequirementsFileRequirementWithLocation
+    | ConstraintsFileRequirementWithLocation
+
+export type LooseProjectNameRequirementWithLocation = WithLocation<{
     type: 'ProjectName'
     name: WithLocation<string>
     versionSpec?: WithLocation<LooseVersionSpecWithLocation>[]
     extras?: WithLocation<string>[]
-}
+}>
 
 export interface LooseVersionSpecWithLocation {
     operator: WithLocation<string>
     version?: WithLocation<string>
 }
-
-export type RequirementWithLocation =
-    | WithLocation<ProjectNameRequirementWithLocation>
-    | WithLocation<ProjectURLRequirementWithLocation>
-    | WithLocation<RequirementsFileRequirementWithLocation>
-    | WithLocation<ConstraintsFileRequirementWithLocation>
-
-export type LooseProjectNameRequirementWithLocation = WithLocation<LooseProjectNameRequirementData>

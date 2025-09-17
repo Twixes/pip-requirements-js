@@ -9,25 +9,26 @@ function stripLocationData<T>(obj: WithLocation<T> | T | null | undefined): T | 
 
     if (typeof obj === 'object' && obj !== null && 'data' in obj && 'location' in obj) {
         // This is a WithLocation wrapper, extract and process the data
-        return stripLocationData((obj as WithLocation<any>).data)
+        return stripLocationData((obj as WithLocation<T>).data)
     }
 
     if (Array.isArray(obj)) {
-        return obj.map((item) => stripLocationData(item)) as any
+        return obj.map((item) => stripLocationData(item)) as T
     }
 
     if (typeof obj === 'object' && obj !== null) {
-        const result: any = {}
+        const result: Record<string, unknown> = {}
         for (const [key, value] of Object.entries(obj)) {
             result[key] = stripLocationData(value)
         }
-        return result
+        return result as T
     }
 
     return obj
 }
 
 // Strict parsing test datasets
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const strictParsingTests: Array<[string, string, any]> = [
     [
         'should parse a version matching name-based project requirement',
@@ -202,9 +203,108 @@ const strictParsingTests: Array<[string, string, any]> = [
                 },
                 versionSpec: undefined,
                 extras: undefined,
-                environmentMarkerTree: { left: 'python_version', operator: '==', right: '"2.7"' },
+                environmentMarkerTree: {
+                    data: { left: 'python_version', operator: '==', right: '"2.7"' },
+                    location: { startIdx: 5, endIdx: 28 },
+                },
             },
             location: { startIdx: 0, endIdx: 28 },
+        },
+    ],
+    [
+        'should parse complex nested environment markers with location data',
+        'pip; (python_version == "3.8" or python_version == "3.9") and sys_platform == "linux"',
+        {
+            data: {
+                type: 'ProjectName',
+                name: {
+                    data: 'pip',
+                    location: { startIdx: 0, endIdx: 3 },
+                },
+                versionSpec: undefined,
+                extras: undefined,
+                environmentMarkerTree: {
+                    data: {
+                        operator: 'and',
+                        left: {
+                            operator: 'or',
+                            left: { left: 'python_version', operator: '==', right: '"3.8"' },
+                            right: { left: 'python_version', operator: '==', right: '"3.9"' },
+                        },
+                        right: { left: 'sys_platform', operator: '==', right: '"linux"' },
+                    },
+                    location: { startIdx: 5, endIdx: 85 },
+                },
+            },
+            location: { startIdx: 0, endIdx: 85 },
+        },
+    ],
+    [
+        'should parse simple AND environment markers',
+        'pip; python_version >= "3.6" and sys_platform != "win32"',
+        {
+            data: {
+                type: 'ProjectName',
+                name: {
+                    data: 'pip',
+                    location: { startIdx: 0, endIdx: 3 },
+                },
+                versionSpec: undefined,
+                extras: undefined,
+                environmentMarkerTree: {
+                    data: {
+                        operator: 'and',
+                        left: { left: 'python_version', operator: '>=', right: '"3.6"' },
+                        right: { left: 'sys_platform', operator: '!=', right: '"win32"' },
+                    },
+                    location: { startIdx: 5, endIdx: 56 },
+                },
+            },
+            location: { startIdx: 0, endIdx: 56 },
+        },
+    ],
+    [
+        'should parse simple OR environment markers',
+        'pip; python_version == "3.7" or python_version == "3.8"',
+        {
+            data: {
+                type: 'ProjectName',
+                name: {
+                    data: 'pip',
+                    location: { startIdx: 0, endIdx: 3 },
+                },
+                versionSpec: undefined,
+                extras: undefined,
+                environmentMarkerTree: {
+                    data: {
+                        operator: 'or',
+                        left: { left: 'python_version', operator: '==', right: '"3.7"' },
+                        right: { left: 'python_version', operator: '==', right: '"3.8"' },
+                    },
+                    location: { startIdx: 5, endIdx: 55 },
+                },
+            },
+            location: { startIdx: 0, endIdx: 55 },
+        },
+    ],
+    [
+        'should parse environment markers with different operators',
+        'pip; python_version ~= "3.8.0"',
+        {
+            data: {
+                type: 'ProjectName',
+                name: {
+                    data: 'pip',
+                    location: { startIdx: 0, endIdx: 3 },
+                },
+                versionSpec: undefined,
+                extras: undefined,
+                environmentMarkerTree: {
+                    data: { left: 'python_version', operator: '~=', right: '"3.8.0"' },
+                    location: { startIdx: 5, endIdx: 30 },
+                },
+            },
+            location: { startIdx: 0, endIdx: 30 },
         },
     ],
     [
@@ -228,7 +328,10 @@ const strictParsingTests: Array<[string, string, any]> = [
                         location: { startIdx: 8, endIdx: 11 },
                     },
                 ],
-                environmentMarkerTree: { left: 'python_version', operator: '==', right: '"2.7"' },
+                environmentMarkerTree: {
+                    data: { left: 'python_version', operator: '==', right: '"2.7"' },
+                    location: { startIdx: 14, endIdx: 37 },
+                },
             },
             location: { startIdx: 0, endIdx: 37 },
         },
@@ -238,6 +341,7 @@ const strictParsingTests: Array<[string, string, any]> = [
 ]
 
 // Loose parsing test datasets
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const looseParsingTests: Array<[string, string, any]> = [
     [
         'should parse a basic in-flight requirement',
