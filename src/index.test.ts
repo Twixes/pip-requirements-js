@@ -175,7 +175,16 @@ const strictParsingTests: Array<[string, string, any]> = [
                         location: { startIdx: 13, endIdx: 22 },
                     },
                 ],
-                extras: ['foo', 'bar'],
+                extras: [
+                    {
+                        data: 'foo',
+                        location: { startIdx: 4, endIdx: 7 },
+                    },
+                    {
+                        data: 'bar',
+                        location: { startIdx: 8, endIdx: 11 },
+                    },
+                ],
                 environmentMarkerTree: undefined,
             },
             location: { startIdx: 0, endIdx: 22 },
@@ -209,7 +218,16 @@ const strictParsingTests: Array<[string, string, any]> = [
                     location: { startIdx: 0, endIdx: 3 },
                 },
                 versionSpec: undefined,
-                extras: ['foo', 'bar'],
+                extras: [
+                    {
+                        data: 'foo',
+                        location: { startIdx: 4, endIdx: 7 },
+                    },
+                    {
+                        data: 'bar',
+                        location: { startIdx: 8, endIdx: 11 },
+                    },
+                ],
                 environmentMarkerTree: { left: 'python_version', operator: '==', right: '"2.7"' },
             },
             location: { startIdx: 0, endIdx: 37 },
@@ -331,7 +349,16 @@ const looseParsingTests: Array<[string, string, any]> = [
                     location: { startIdx: 0, endIdx: 3 },
                 },
                 versionSpec: undefined,
-                extras: ['foo', 'bar'],
+                extras: [
+                    {
+                        data: 'foo',
+                        location: { startIdx: 4, endIdx: 7 },
+                    },
+                    {
+                        data: 'bar',
+                        location: { startIdx: 8, endIdx: 11 },
+                    },
+                ],
             },
             location: { startIdx: 0, endIdx: 38 },
         },
@@ -467,7 +494,16 @@ const looseParsingTests: Array<[string, string, any]> = [
                     location: { startIdx: 0, endIdx: 3 },
                 },
                 versionSpec: undefined,
-                extras: ['extra1', 'extra2'],
+                extras: [
+                    {
+                        data: 'extra1',
+                        location: { startIdx: 4, endIdx: 10 },
+                    },
+                    {
+                        data: 'extra2',
+                        location: { startIdx: 11, endIdx: 17 },
+                    },
+                ],
             },
             location: { startIdx: 0, endIdx: 17 },
         },
@@ -499,7 +535,16 @@ const looseParsingTests: Array<[string, string, any]> = [
                     location: { startIdx: 0, endIdx: 3 },
                 },
                 versionSpec: undefined,
-                extras: ['extra1', 'extra2'],
+                extras: [
+                    {
+                        data: 'extra1',
+                        location: { startIdx: 4, endIdx: 10 },
+                    },
+                    {
+                        data: 'extra2',
+                        location: { startIdx: 11, endIdx: 17 },
+                    },
+                ],
             },
             location: { startIdx: 0, endIdx: 19 },
         },

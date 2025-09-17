@@ -171,8 +171,8 @@ semantics.addOperation<any>('extractWithLocation', {
             environmentMarkerTree: markers.child(0)?.extractWithLocation(),
         })
     },
-    Extras: function (_open, extrasList, _close): string[] {
-        return extrasList.asIteration().children.map((extra) => extra.sourceString)
+    Extras: function (_open, extrasList, _close): WithLocation<string>[] {
+        return extrasList.asIteration().children.map((extra) => withLocation<string>(extra, extra.sourceString))
     },
     RequirementsReq: function (_dashR, filePath) {
         return withLocation(this, {
@@ -246,8 +246,8 @@ semantics.addOperation<any>('extractLooselyWithLocation', {
     },
     LooseNonNameReq: (_) => null,
 
-    LooseExtras: function (_open, extrasList, _trailingComma, _close): string[] {
-        return extrasList.asIteration().children.map((extra) => extra.sourceString)
+    LooseExtras: function (_open, extrasList, _trailingComma, _close): WithLocation<string>[] {
+        return extrasList.asIteration().children.map((extra) => withLocation<string>(extra, extra.sourceString))
     },
 
     LooseVersionSpec_parenthesized: (_open, versionMany, _close): string[] =>
