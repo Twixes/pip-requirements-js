@@ -116,4 +116,11 @@ export enum VersionOperator {
 export interface LooseProjectNameRequirement {
     type: 'ProjectName'
     name: string
+    versionSpec?: LooseVersionSpec[]
+    extras?: string[]
+}
+
+export interface LooseVersionSpec {
+    operator: string
+    version?: string
 }

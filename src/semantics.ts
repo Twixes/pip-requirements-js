@@ -13,6 +13,7 @@ import {
     PythonString,
     EnvironmentMarkerVariable,
     LooseProjectNameRequirement,
+    LooseVersionSpec,
 } from './types'
 
 export const semantics = grammar.createSemantics()
@@ -97,11 +98,35 @@ semantics.addOperation<any>('extractLoosely', {
             .filter(Boolean),
     LooseLine: (req, _comment): Requirement | null => req.child(0)?.extractLoosely() || null,
 
-    LooseNameReq: (name, _extras, _versionSpec, _markers): LooseProjectNameRequirement => ({
+    LooseNameReq: (name, extras, versionSpec, _markers): LooseProjectNameRequirement => ({
         type: 'ProjectName',
         name: name.sourceString,
+        extras: extras.child(0)?.extractLoosely(),
+        versionSpec: versionSpec.extractLoosely(),
     }),
     LooseNonNameReq: (_) => null,
+
+    LooseExtras: (_open, extrasList, _trailingComma, _close): string[] =>
+        extrasList.asIteration().children.map((extra) => extra.sourceString),
+
+    LooseVersionSpec_parenthesized: (_open, versionMany, _close): string[] => versionMany.extractLoosely() || [],
+    LooseVersionMany: (versionOnesList, _trailingComma): LooseVersionSpec[] | undefined => {
+        const versionOnes = versionOnesList.asIteration().children
+        if (versionOnes.length === 0) {
+            return undefined
+        }
+        return versionOnes.map((versionOne) => versionOne.extractLoosely())
+    },
+    LooseVersionOne: (operator, version): LooseVersionSpec => {
+        const result: LooseVersionSpec = {
+            operator: operator.sourceString,
+        }
+        // Only add version if it was actually matched (not empty)
+        if (version.sourceString) {
+            result.version = version.sourceString
+        }
+        return result
+    },
     /* eslint-enable @typescript-eslint/no-unused-vars */
 })
 
