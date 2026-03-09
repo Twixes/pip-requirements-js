@@ -69,9 +69,9 @@ PEP508 {
     // Environment markers
     QuotedMarker  = ";" Marker
     Marker        = MarkerOr
-    MarkerOr      = MarkerAnd "or" MarkerAnd -- node
+    MarkerOr      = MarkerAnd "or" MarkerOr -- node
                   | MarkerAnd -- leaf
-    MarkerAnd     = MarkerExpr "and" MarkerExpr -- node
+    MarkerAnd     = MarkerExpr "and" MarkerAnd -- node
                   | MarkerExpr -- leaf
     MarkerExpr    = MarkerVar markerOp MarkerVar -- leaf
                   | "(" Marker ")" -- node

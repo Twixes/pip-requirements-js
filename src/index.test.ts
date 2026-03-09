@@ -338,6 +338,125 @@ const strictParsingTests: Array<[string, string, any]> = [
     ],
     ['should ignore a comment', ' # xyz ', null],
     ['should ignore a blank line', '', null],
+    // Chained and/or operators - tests for the grammar fix
+    [
+        'should parse chained OR operators (3 conditions)',
+        'pip; sys_platform == "linux" or sys_platform == "darwin" or sys_platform == "win32"',
+        {
+            data: {
+                type: 'ProjectName',
+                name: {
+                    data: 'pip',
+                    location: { startIdx: 0, endIdx: 3 },
+                },
+                versionSpec: undefined,
+                extras: undefined,
+                environmentMarkerTree: {
+                    data: {
+                        operator: 'or',
+                        left: { left: 'sys_platform', operator: '==', right: '"linux"' },
+                        right: {
+                            operator: 'or',
+                            left: { left: 'sys_platform', operator: '==', right: '"darwin"' },
+                            right: { left: 'sys_platform', operator: '==', right: '"win32"' },
+                        },
+                    },
+                    location: { startIdx: 5, endIdx: 83 },
+                },
+            },
+            location: { startIdx: 0, endIdx: 83 },
+        },
+    ],
+    [
+        'should parse chained AND operators (3 conditions)',
+        'pip; python_version >= "3.8" and python_version < "4.0" and sys_platform == "linux"',
+        {
+            data: {
+                type: 'ProjectName',
+                name: {
+                    data: 'pip',
+                    location: { startIdx: 0, endIdx: 3 },
+                },
+                versionSpec: undefined,
+                extras: undefined,
+                environmentMarkerTree: {
+                    data: {
+                        operator: 'and',
+                        left: { left: 'python_version', operator: '>=', right: '"3.8"' },
+                        right: {
+                            operator: 'and',
+                            left: { left: 'python_version', operator: '<', right: '"4.0"' },
+                            right: { left: 'sys_platform', operator: '==', right: '"linux"' },
+                        },
+                    },
+                    location: { startIdx: 5, endIdx: 83 },
+                },
+            },
+            location: { startIdx: 0, endIdx: 83 },
+        },
+    ],
+    [
+        'should parse Poetry-generated markers with many platform conditions',
+        'greenlet==3.3.0 ; python_version == "3.12" and (platform_machine == "aarch64" or platform_machine == "ppc64le" or platform_machine == "x86_64" or platform_machine == "amd64" or platform_machine == "AMD64" or platform_machine == "win32" or platform_machine == "WIN32")',
+        {
+            data: {
+                type: 'ProjectName',
+                name: {
+                    data: 'greenlet',
+                    location: { startIdx: 0, endIdx: 8 },
+                },
+                versionSpec: [
+                    {
+                        data: {
+                            operator: {
+                                data: '==',
+                                location: { startIdx: 8, endIdx: 10 },
+                            },
+                            version: {
+                                data: '3.3.0',
+                                location: { startIdx: 10, endIdx: 15 },
+                            },
+                        },
+                        location: { startIdx: 8, endIdx: 15 },
+                    },
+                ],
+                extras: undefined,
+                environmentMarkerTree: {
+                    data: {
+                        operator: 'and',
+                        left: { left: 'python_version', operator: '==', right: '"3.12"' },
+                        right: {
+                            operator: 'or',
+                            left: { left: 'platform_machine', operator: '==', right: '"aarch64"' },
+                            right: {
+                                operator: 'or',
+                                left: { left: 'platform_machine', operator: '==', right: '"ppc64le"' },
+                                right: {
+                                    operator: 'or',
+                                    left: { left: 'platform_machine', operator: '==', right: '"x86_64"' },
+                                    right: {
+                                        operator: 'or',
+                                        left: { left: 'platform_machine', operator: '==', right: '"amd64"' },
+                                        right: {
+                                            operator: 'or',
+                                            left: { left: 'platform_machine', operator: '==', right: '"AMD64"' },
+                                            right: {
+                                                operator: 'or',
+                                                left: { left: 'platform_machine', operator: '==', right: '"win32"' },
+                                                right: { left: 'platform_machine', operator: '==', right: '"WIN32"' },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    location: { startIdx: 18, endIdx: 267 },
+                },
+            },
+            location: { startIdx: 0, endIdx: 267 },
+        },
+    ],
 ]
 
 // Loose parsing test datasets
