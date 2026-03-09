@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/Twixes/pip-requirements-js/compare/v1.0.2...v1.0.3) (2026-03-09)
+
+
+### Bug Fixes
+
+* support chained and/or operators in environment markers ([#17](https://github.com/Twixes/pip-requirements-js/issues/17)) ([f122e2d](https://github.com/Twixes/pip-requirements-js/commit/f122e2d7c9fb62e029072788935dfa7f25efcc1b))
+
 ## [1.0.2](https://github.com/Twixes/pip-requirements-js/compare/v1.0.1...v1.0.2) (2025-09-17)
 
 
