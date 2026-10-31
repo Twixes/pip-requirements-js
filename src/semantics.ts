@@ -52,7 +52,7 @@ semantics.addOperation<any>('extract', {
         extras: extras.child(0)?.extract(),
         environmentMarkerTree: markers.child(0)?.extract(),
     }),
-    UrlReq: (name, extras, url, _space, markers): ProjectURLRequirement => ({
+    UrlReq: (name, extras, url, markers): ProjectURLRequirement => ({
         type: 'ProjectURL',
         name: name.sourceString,
         url: url.extract(),
@@ -164,7 +164,7 @@ semantics.addOperation<any>('extractWithLocation', {
             environmentMarkerTree: markers.child(0)?.extractWithLocation(),
         })
     },
-    UrlReq: function (name, extras, url, _space, markers) {
+    UrlReq: function (name, extras, url, markers) {
         return withLocation(this, {
             type: 'ProjectURL',
             name: withLocation<string>(name, name.sourceString),

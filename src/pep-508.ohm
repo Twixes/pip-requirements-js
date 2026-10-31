@@ -6,7 +6,9 @@ PEP508 {
     Req = UrlReq | NameReq | RequirementsReq | ConstraintsReq
 
     NameReq = Name Extras? VersionSpec QuotedMarker?
-    UrlReq  = Name Extras? UrlSpec (space QuotedMarker)?
+    // A syntactic rule skips the white space before each of its terms, so the white space that PEP 508 requires between the
+    // URL and the marker is skipped before QuotedMarker; without it, uri reads the ";" as part of the URL.
+    UrlReq  = Name Extras? UrlSpec QuotedMarker?
     Extras  = "[" ListOf<identifier, ","> "]"
     Name    = identifier
     identifier    = alnum identifierEnd*
