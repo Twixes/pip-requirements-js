@@ -130,6 +130,29 @@ const strictParsingTests: Array<[string, string, any]> = [
         },
     ],
     [
+        'should parse a URL-based project requirement with environment markers',
+        'pip @ https://x.com/y.zip ; python_version == "2.7"',
+        {
+            data: {
+                type: 'ProjectURL',
+                name: {
+                    data: 'pip',
+                    location: { startIdx: 0, endIdx: 3 },
+                },
+                url: {
+                    data: 'https://x.com/y.zip',
+                    location: { startIdx: 6, endIdx: 25 },
+                },
+                extras: undefined,
+                environmentMarkerTree: {
+                    data: { left: 'python_version', operator: '==', right: '"2.7"' },
+                    location: { startIdx: 28, endIdx: 51 },
+                },
+            },
+            location: { startIdx: 0, endIdx: 51 },
+        },
+    ],
+    [
         'should parse a requirements file requirement',
         '-r requirements.txt',
         {
